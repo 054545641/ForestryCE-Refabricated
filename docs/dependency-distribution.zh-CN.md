@@ -1,7 +1,7 @@
 # JEI / Jade 分发核查与发布规则
 
 核查日期：2026-10-23。范围为当前 `26.2-fabric` 工作区、全部本地可达 Git 历史，以及
-`054545641/ForestryCE-Fabricated` 的 GitHub Releases、Actions artifacts 和缓存列表。
+`054545641/ForestryCE-Refabricated`（仓库现名）的 GitHub Releases、Actions artifacts 和缓存列表。
 
 ## 许可核实
 

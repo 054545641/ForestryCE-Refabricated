@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "forestrybutterflies",
   "version": "${version}",
-  "name": "Forestry Butterflies — Fabric",
-  "description": "Optional butterflies, breeding and pollination module for Forestry Fabric 26.2.",
+  "name": "Forestry CE - Refabricated: Butterflies",
+  "description": "Optional butterflies, breeding and pollination module for Forestry CE - Refabricated on Fabric 26.2.",
   "environment": "*",
   "mixins": [
     "forestrybutterflies.mixins.json"

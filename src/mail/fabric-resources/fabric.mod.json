@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "forestrymail",
   "version": "${version}",
-  "name": "Forestry Mail — Fabric",
-  "description": "Optional mail, stamps and trading stations for Forestry Fabric 26.2.",
+  "name": "Forestry CE - Refabricated: Mail",
+  "description": "Optional mail, stamps and trading stations for Forestry CE - Refabricated on Fabric 26.2.",
   "environment": "*",
   "license": "LGPL-3.0-only",
   "entrypoints": {

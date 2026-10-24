@@ -45,11 +45,11 @@ please do not use this port.
 ### Acknowledgements
 
 Thank you to the **Forestry team** for creating and maintaining Forestry, and to the **Forestry CE team** for porting Forestry
-to newer Minecraft versions. The work of both teams made ForestryCE-Refabricated possible.
+to newer Minecraft versions. The work of both teams made Forestry CE - Refabricated possible.
 
 ### Reporting Bugs
-Please report bugs with ForestryCE-Refabricated in [this repository's issue tracker](https://github.com/054545641/ForestryCE-Fabricated/issues).
-Before opening a report, please make sure the bug has not already been reported by [searching the issues](https://github.com/054545641/ForestryCE-Fabricated/issues?q=is%3Aissue).
+Please report bugs with Forestry CE - Refabricated in [this repository's issue tracker](https://github.com/054545641/ForestryCE-Refabricated/issues).
+Before opening a report, please make sure the bug has not already been reported by [searching the issues](https://github.com/054545641/ForestryCE-Refabricated/issues?q=is%3Aissue).
 
 For crashes, you must post a link to the full crash report.
 [gist.github.com](https://gist.github.com) is a good place to upload them.

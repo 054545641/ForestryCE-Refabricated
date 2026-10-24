@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "forestry_f2_tests",
   "version": "1.0.0",
-  "name": "Forestry Fabric platform regression tests",
+  "name": "Forestry CE - Refabricated: Platform Regression Tests",
   "environment": "*",
   "entrypoints": {
     "fabric-gametest": [

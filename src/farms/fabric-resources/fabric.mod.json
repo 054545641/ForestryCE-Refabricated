@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "forestryfarms",
   "version": "${version}",
-  "name": "Forestry Farms — Fabric",
-  "description": "Optional minifarms and multiblock farms for Forestry Fabric 26.2.",
+  "name": "Forestry CE - Refabricated: Farms",
+  "description": "Optional minifarms and multiblock farms for Forestry CE - Refabricated on Fabric 26.2.",
   "environment": "*",
   "license": "LGPL-3.0-only",
   "entrypoints": {

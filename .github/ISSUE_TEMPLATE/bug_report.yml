@@ -10,7 +10,7 @@ body:
     id: version
     attributes:
       label: Minecraft version
-      description: "Which Forestry: CE version are you on? Pick both if you confirmed it on both."
+      description: "Which Minecraft version are you running Forestry CE - Refabricated on? Pick both if you confirmed it on both."
       multiple: true
       options:
         - 1.21.1 (NeoForge)
@@ -20,7 +20,7 @@ body:
   - type: input
     id: forestry_version
     attributes:
-      label: Forestry version
+      label: Forestry CE - Refabricated version
       placeholder: "ex. 3.0.0-alpha8 or 2.11.0"
     validations:
       required: true
@@ -55,7 +55,7 @@ body:
   - type: dropdown
     id: other_mods
     attributes:
-      label: Does it happen with only Forestry and Patchouli installed?
+      label: Does it happen with only Forestry CE - Refabricated and Patchouli installed?
       options:
         - "Yes"
         - "No, it needs another mod (name it below)"

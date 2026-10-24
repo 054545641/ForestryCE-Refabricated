@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "forestry",
   "version": "${version}",
-  "name": "Forestry CE — Fabric",
-  "description": "Forestry for Fabric 26.2. Native gameplay, rendering, world generation and optional JEI/Jade adapters.",
+  "name": "Forestry CE - Refabricated",
+  "description": "Unofficial Fabric 26.2 port of Forestry: Community Edition. Native gameplay, rendering, world generation and optional JEI/Jade adapters.",
   "environment": "*",
   "accessWidener": "forestry.accesswidener",
   "mixins": [

@@ -17,5 +17,5 @@ $gradleArguments = @('assemble', 'gametestClasses', 'checkFabricF3', '--console=
 if ($Offline) { $gradleArguments += '--offline' }
 & (Join-Path $repoRoot 'gradlew-fabric.bat') @gradleArguments
 if ($LASTEXITCODE -ne 0) { throw 'Fabric setup failed. Review the Gradle error above before starting Minecraft.' }
-Write-Host 'Forestry Fabric F3 built. Client: .\gradlew-fabric.bat runClient; server: .\gradlew-fabric.bat runServer'
+Write-Host 'Forestry CE - Refabricated F3 built. Client: .\gradlew-fabric.bat runClient; server: .\gradlew-fabric.bat runServer'
 Write-Host 'Jade and JEI are optional integrations. See docs/porting/f3-status.zh-CN.md for validation status.'

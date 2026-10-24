@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "forestry_datagen",
   "version": "1.0.0",
-  "name": "Forestry development resource generator",
+  "name": "Forestry CE - Refabricated: Development Resource Generator",
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": ["forestry.datagen.ForestryFabricDatagen"]
