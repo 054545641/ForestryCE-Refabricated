@@ -8,7 +8,8 @@ plugins {
 
 group = 'thedarkcolour.forestry'
 version = forestryVersion
-base.archivesName = "${modArchiveBaseName}-${minecraftVersion}-fabric"
+def fabricApiMinimumRelease = fabricApiMinVersion.tokenize('.')[1]
+base.archivesName = "${modArchiveBaseName}-${minecraftVersion}-${fabricApiMinimumRelease}-fabric"
 layout.buildDirectory = layout.projectDirectory.dir('build/fabric-26.2')
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
@@ -154,7 +155,10 @@ tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8'; options.
 tasks.withType(ProcessResources).configureEach {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     inputs.property 'version', project.version
-    filesMatching('fabric.mod.json') { expand version: project.version }
+    inputs.property 'fabricApiMinVersion', project.fabricApiMinVersion
+    filesMatching('fabric.mod.json') {
+        expand version: project.version, fabricApiMinVersion: project.fabricApiMinVersion
+    }
 }
 // Entry classes are verified before test methods run; absent extension classes must never be loaded.
 tasks.named('processGametestResources') {
@@ -170,7 +174,7 @@ tasks.named('processGametestResources') {
 tasks.named('jar') { from('LICENSE.md') }
 contentModules.each { module ->
     tasks.register("${module}Jar", Jar) {
-        archiveBaseName = "${modArchiveBaseName}-${module}-${minecraftVersion}-fabric"
+        archiveBaseName = "${modArchiveBaseName}-${module}-${minecraftVersion}-${fabricApiMinimumRelease}-fabric"
         from sourceSets[module].output
         from('LICENSE.md')
     }

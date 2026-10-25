@@ -8,6 +8,20 @@
   "mixins": [
     "forestrybutterflies.mixins.json"
   ],
+  "authors": [
+    "054545641"
+  ],
+  "contributors": [
+    "thedarkcolour",
+    "Forestry CE Team",
+    "SirSengir",
+    "Forestry Team"
+  ],
+  "contact": {
+    "homepage": "https://github.com/054545641/ForestryCE-Refabricated",
+    "sources": "https://github.com/054545641/ForestryCE-Refabricated",
+    "issues": "https://github.com/054545641/ForestryCE-Refabricated/issues"
+  },
   "license": "LGPL-3.0-only",
   "entrypoints": {
     "jei_mod_plugin": ["forestry.lepidopterology.compat.LepidopterologyJeiPlugin"],
@@ -23,6 +37,7 @@
     "fabricloader": ">=0.19.5",
     "minecraft": "26.2",
     "java": ">=25",
+    "fabric-api": ">=${fabricApiMinVersion}",
     "forestry": "${version}"
   }
 }

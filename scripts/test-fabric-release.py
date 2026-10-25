@@ -33,7 +33,8 @@ def digest(path, algorithm="sha256"):
 
 def release_jar(mod, properties):
     prefix = properties["modArchiveBaseName"] + MODULE_ARCHIVE_SUFFIXES[mod]
-    return ROOT / "build/fabric-26.2/libs" / f"{prefix}-{properties['minecraftVersion']}-fabric-{properties['forestryVersion']}.jar"
+    minimum_api_release = properties["fabricApiMinVersion"].split(".")[1]
+    return ROOT / "build/fabric-26.2/libs" / f"{prefix}-{properties['minecraftVersion']}-{minimum_api_release}-fabric-{properties['forestryVersion']}.jar"
 
 
 def request(url):

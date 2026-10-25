@@ -68,8 +68,12 @@ Import the root Gradle project in your IDE.
 On Windows, run `scripts/setup-fabric.ps1`, then `gradlew-fabric.bat runClient`.
 With Java 25, `gradlew build` produces four independent JARs in `build/fabric-26.2/libs`.
 The JAR names use the `FCERefabricated` prefix configured by `modArchiveBaseName` in `gradle.properties`:
-`FCERefabricated-<minecraft>-fabric-<version>.jar` for the core, and
-`FCERefabricated-<module>-<minecraft>-fabric-<version>.jar` for `butterflies`, `farms`, and `mail`.
+`FCERefabricated-<minecraft>-<minimum-fabric-api-release>-fabric-<version>.jar` for the core, and
+`FCERefabricated-<module>-<minecraft>-<minimum-fabric-api-release>-fabric-<version>.jar` for `butterflies`, `farms`, and `mail`.
+For example, the current core is `FCERefabricated-26.2-161-fabric-3.0.0-alpha8.jar`.
+The `161` marker comes from the supported minimum `fabricApiMinVersion=0.161.0+26.2`, independently of the
+`fabricApiVersion` used to compile the project. All four JARs declare this full minimum API version;
+each optional module also requires the exact same core mod version. `forestryVersion` contains only the mod version.
 The runtime mod IDs remain `forestry`, `forestrybutterflies`, `forestryfarms`, and `forestrymail`.
 See the [Fabric development guide](docs/fabric-development.zh-CN.md) for more details.
 
