@@ -8,7 +8,7 @@ plugins {
 
 group = 'thedarkcolour.forestry'
 version = forestryVersion
-base.archivesName = "forestry-${minecraftVersion}-fabric"
+base.archivesName = "${modArchiveBaseName}-${minecraftVersion}-fabric"
 layout.buildDirectory = layout.projectDirectory.dir('build/fabric-26.2')
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
@@ -170,7 +170,7 @@ tasks.named('processGametestResources') {
 tasks.named('jar') { from('LICENSE.md') }
 contentModules.each { module ->
     tasks.register("${module}Jar", Jar) {
-        archiveBaseName = "forestry${module}-${minecraftVersion}-fabric"
+        archiveBaseName = "${modArchiveBaseName}-${module}-${minecraftVersion}-fabric"
         from sourceSets[module].output
         from('LICENSE.md')
     }

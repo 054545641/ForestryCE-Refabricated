@@ -9,6 +9,15 @@
   "mixins": [
     "forestry.mixins.json"
   ],
+  "authors": [
+    "054545641"
+  ],
+  "contributors": [
+    "thedarkcolour",
+	"Forsetry CE Team",
+    "SirSengir",
+    "Forsetry Team"
+  ],
   "license": "LGPL-3.0-only",
   "entrypoints": {
     "jade": ["forestry.core.platform.compat.jade.ForestryJadePlugin"],

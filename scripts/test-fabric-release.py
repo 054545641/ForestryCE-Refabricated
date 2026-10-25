@@ -18,11 +18,22 @@ RUNTIME = BASE / "runtime"
 CACHE = ROOT / ".local/gradle-fabric-26.2/caches"
 JAVA = ROOT / ".local/jdk25/bin/java.exe"
 MODULES = ("forestry", "forestrybutterflies", "forestryfarms", "forestrymail")
+MODULE_ARCHIVE_SUFFIXES = {
+    "forestry": "",
+    "forestrybutterflies": "-butterflies",
+    "forestryfarms": "-farms",
+    "forestrymail": "-mail",
+}
 PORT = 25579
 
 
 def digest(path, algorithm="sha256"):
     return hashlib.new(algorithm, path.read_bytes()).hexdigest()
+
+
+def release_jar(mod, properties):
+    prefix = properties["modArchiveBaseName"] + MODULE_ARCHIVE_SUFFIXES[mod]
+    return ROOT / "build/fabric-26.2/libs" / f"{prefix}-{properties['minecraftVersion']}-fabric-{properties['forestryVersion']}.jar"
 
 
 def request(url):
@@ -123,7 +134,7 @@ def prepare(runtime_only=False):
         return
     outputs = {}
     for mod in MODULES:
-        source = ROOT / "build/fabric-26.2/libs" / f"{mod}-26.2-fabric-{properties['forestryVersion']}.jar"
+        source = release_jar(mod, properties)
         with zipfile.ZipFile(source) as archive:
             if any(name.startswith(("forestry/fabric/", "forestry/datagen/", "groovy/", "net/neoforged/")) for name in archive.namelist()):
                 raise ValueError(f"Development contents in release: {source}")

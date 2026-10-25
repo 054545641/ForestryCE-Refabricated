@@ -67,6 +67,10 @@ The `26.2-fabric` branch uses the root Loom build for Fabric 26.2, with Jade and
 Import the root Gradle project in your IDE.
 On Windows, run `scripts/setup-fabric.ps1`, then `gradlew-fabric.bat runClient`.
 With Java 25, `gradlew build` produces four independent JARs in `build/fabric-26.2/libs`.
+The JAR names use the `FCERefabricated` prefix configured by `modArchiveBaseName` in `gradle.properties`:
+`FCERefabricated-<minecraft>-fabric-<version>.jar` for the core, and
+`FCERefabricated-<module>-<minecraft>-fabric-<version>.jar` for `butterflies`, `farms`, and `mail`.
+The runtime mod IDs remain `forestry`, `forestrybutterflies`, `forestryfarms`, and `forestrymail`.
 See the [Fabric development guide](docs/fabric-development.zh-CN.md) for more details.
 
 For distribution, run `gradlew stageFabricDistribution -PwithJade=false -PwithJei=false` and use only the four verified JARs

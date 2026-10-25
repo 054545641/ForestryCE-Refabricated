@@ -14,7 +14,7 @@ Get-Content -LiteralPath (Join-Path $projectRoot 'gradle.properties') | ForEach-
 if (!$GradleCache) { $GradleCache = Join-Path $projectRoot '.local/gradle-fabric-26.2/caches/modules-2/files-2.1' }
 if (!$Java) { $Java = Join-Path $projectRoot '.local/jdk25/bin/java.exe' }
 if (!$CoreJar) {
-    $CoreJar = Join-Path $projectRoot "build/fabric-26.2/libs/forestry-$($properties.minecraftVersion)-fabric-$($properties.forestryVersion).jar"
+    $CoreJar = Join-Path $projectRoot "build/fabric-26.2/libs/$($properties.modArchiveBaseName)-$($properties.minecraftVersion)-fabric-$($properties.forestryVersion).jar"
 }
 
 function Find-Artifact([string]$Group, [string]$Name, [string]$Version) {
