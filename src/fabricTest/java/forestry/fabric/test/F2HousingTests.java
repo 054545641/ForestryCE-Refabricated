@@ -10,6 +10,50 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.*;
 public final class F2HousingTests {
+    @GameTest(maxTicks = 2_000_000)
+    public void housingRestart(GameTestHelper helper) {
+        F2RestartHousing.run(helper);
+    }
+
+    @GameTest
+    public void swarmHiveUsesDirtGroundAndRetainsPrincess(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var origin = helper.absolutePos(new BlockPos(2, 3, 2));
+        var roof = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, origin).below();
+        helper.assertTrue(level.getBlockState(roof).is(net.minecraft.world.level.block.Blocks.BARRIER), "Missing test enclosure roof");
+        level.setBlockAndUpdate(roof, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+        var princess = SpeciesUtil.getBeeSpecies(ForestryBeeSpecies.FOREST).createIndividual();
+        princess.setPristine(false);
+        var stack = princess.createStack(BeeLifeStage.PRINCESS);
+        var definition = new forestry.apiculture.hives.HiveDefinitionSwarmer(stack);
+        var hive = new forestry.apiculture.hives.Hive(definition,
+            forestry.apiculture.hives.HiveDefinitionSwarmer.SWARMER_GEN_CHANCE, java.util.List.of());
+        var grounds = java.util.List.of(net.minecraft.world.level.block.Blocks.DIRT, net.minecraft.world.level.block.Blocks.GRASS_BLOCK);
+        for (int index = 0; index < grounds.size(); index++) {
+            var ground = grounds.get(index);
+            var pos = origin.above(index * 2);
+            level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+            level.setBlockAndUpdate(pos.below(), ground.defaultBlockState());
+            helper.assertTrue(level.getBlockState(pos.below()).is(forestry.api.ForestryTags.Blocks.SWARM_BEE_GROUND), "Swarm ground tag omitted " + ground);
+            var resolved = hive.getPosForHive(level, net.minecraft.util.RandomSource.create(1), pos.getX(), pos.getZ());
+            helper.assertTrue(pos.equals(resolved), "Swarm height mismatch: expected " + pos + ", resolved " + resolved);
+            helper.assertTrue(forestry.apiculture.hives.HiveDecorator.tryGenHive(level,
+                net.minecraft.util.RandomSource.create(1), pos.getX(), pos.getZ(), hive), "Swarm hive did not generate on " + ground);
+            helper.assertTrue(level.getBlockEntity(pos) instanceof forestry.apiculture.hives.HiveBlockEntity, "Swarm hive placed at the wrong height");
+            var saved = level.getBlockEntity(pos).saveCustomOnly(level.registryAccess());
+            var contained = new java.util.ArrayList<ItemStack>();
+            InventoryData.replaceStacks(contained, saved.getListOrEmpty("Contained"), level.registryAccess());
+            helper.assertTrue(contained.size() == 1 && ItemStack.matches(stack, contained.getFirst()), "Swarm hive lost or changed its princess");
+            level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+        }
+        var pos = origin.above(2);
+        level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(pos.below(), net.minecraft.world.level.block.Blocks.STONE.defaultBlockState());
+        helper.assertFalse(forestry.apiculture.hives.HiveDecorator.tryGenHive(level,
+            net.minecraft.util.RandomSource.create(1), pos.getX(), pos.getZ(), hive), "Swarm hive accepted stone ground");
+        helper.succeed();
+    }
+
     @GameTest public void bees(GameTestHelper h) {
         var housing = (AbstractBeeHousingBlockEntity) F2MachineTests.place(h.getLevel(), h.absolutePos(new BlockPos(3, 2, 3)), "apiary");
         var species = SpeciesUtil.getBeeSpecies(ForestryBeeSpecies.FOREST);

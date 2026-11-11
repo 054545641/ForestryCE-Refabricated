@@ -5,25 +5,16 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-/**
- * A one-pixel-thick sheet laid against the face of another block.
- */
 public class BlockSheet extends BlockBurnable {
-	/**
-	 * The face of the neighbouring block the sheet lies against, not the face the sheet points at.
-	 * Ex. UP -> the sheet sits on top of the block below it.
-	 */
 	public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
 
 	private static final float DEPTH = 1 / 16f;
@@ -67,11 +58,6 @@ public class BlockSheet extends BlockBurnable {
 
 	@Override
 	public boolean isFlammable(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-		return state.isFaceSturdy(level, pos, direction);
-	}
-
-	@Override
-	public boolean isFireSource(BlockState state, LevelReader level, BlockPos pos, Direction direction) {
 		return state.isFaceSturdy(level, pos, direction);
 	}
 }

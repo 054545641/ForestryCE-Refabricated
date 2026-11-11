@@ -18,7 +18,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.phys.AABB;
 
 public class BlockForestryFluid extends LiquidBlock {
 	private final boolean spreadsFire;
@@ -149,9 +148,7 @@ public class BlockForestryFluid extends LiquidBlock {
 	}
 
 	private static boolean isNearFire(Level world, int x, int y, int z) {
-		AABB boundingBox = new AABB(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
-		// Copied from 'Entity.move', replaces method 'World.isFlammableWithin'
-		return BlockPos.betweenClosedStream(boundingBox.deflate(0.001D)).anyMatch((pos) -> {
+		return BlockPos.betweenClosedStream(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1).anyMatch((pos) -> {
 			BlockState state = world.getBlockState(pos);
 			return state.is(BlockTags.FIRE) || state.is(Blocks.LAVA);
 		});

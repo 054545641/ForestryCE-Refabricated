@@ -233,6 +233,165 @@ public final class F3WorldTests {
     }
 
     @GameTest
+    public void decorativeBlocksBurnAtPlankRateAndCanBurnAway(GameTestHelper test) {
+        var level = test.getLevel();
+        test.setBiome(net.minecraft.world.level.biome.Biomes.PLAINS);
+        var firePos = test.absolutePos(new BlockPos(3, 3, 3));
+        int previous = level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER);
+        level.getGameRules().set(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, -1, level.getServer());
+        try {
+            for (String name : List.of("cork", "plywood_block", "plywood")) {
+                var block = BuiltInRegistries.BLOCK.getValue(id(name));
+                var fuel = block.defaultBlockState();
+                if (block instanceof BlockSheet) fuel = fuel.setValue(BlockSheet.FACING, Direction.EAST);
+                var registered = net.fabricmc.fabric.api.registry.FlammableBlockRegistry.getDefaultInstance().get(block);
+                require(registered != null && registered.getIgniteOdds() == 5 && registered.getBurnOdds() == 20,
+                    "Incorrect plank fire rates for " + name);
+                for (int roll : List.of(19, 20)) {
+                    prepareFireFixture(level, firePos);
+                    level.setBlockAndUpdate(firePos.east(), fuel);
+                    level.getBlockState(firePos).tick(level, firePos, burnRandom(roll));
+                    require(roll == 19 ? level.isEmptyBlock(firePos.east()) : level.getBlockState(firePos.east()).is(block),
+                        "Fire did not respect the plank burn threshold or burn away " + name + ": " + roll);
+                }
+            }
+            prepareFireFixture(level, firePos);
+            level.setBlockAndUpdate(firePos.east(), forestry.apiculture.features.ApicultureBlocks.WAX_BLOCK.defaultState());
+            level.getBlockState(firePos).tick(level, firePos, burnRandom(19));
+            require(level.getFluidState(firePos.east()).is(ForestryFluids.WAX.getFluid()), "Burning wax stopped melting into wax fluid");
+            prepareFireFixture(level, firePos);
+            level.setBlockAndUpdate(firePos.east(), forestry.apiculture.features.ApicultureBlocks.REFRACTORY_WAX_BLOCK.defaultState());
+            level.getBlockState(firePos).tick(level, firePos, burnRandom(0));
+            require(level.getBlockState(firePos.east()).is(forestry.apiculture.features.ApicultureBlocks.REFRACTORY_WAX_BLOCK.block()),
+                "Refractory wax became combustible");
+        } finally {
+            clearFireFixture(level, firePos);
+            level.getGameRules().set(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, previous, level.getServer());
+        }
+        test.succeed();
+    }
+
+    @GameTest
+    public void plywoodSheetBurnsOnlyOnItsFilledFace(GameTestHelper test) {
+        var level = test.getLevel();
+        test.setBiome(net.minecraft.world.level.biome.Biomes.PLAINS);
+        var firePos = test.absolutePos(new BlockPos(3, 3, 3));
+        var sheet = BuiltInRegistries.BLOCK.getValue(id("plywood"));
+        int previous = level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER);
+        level.getGameRules().set(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, -1, level.getServer());
+        try {
+            for (Direction side : Direction.values()) {
+                for (boolean filled : List.of(true, false)) {
+                    prepareFireFixture(level, firePos);
+                    var target = firePos.relative(side);
+                    var state = sheet.defaultBlockState().setValue(BlockSheet.FACING, filled ? side : side.getOpposite());
+                    level.setBlockAndUpdate(target, state);
+                    level.getBlockState(firePos).tick(level, firePos, burnRandom(0));
+                    require(filled ? level.isEmptyBlock(target) : level.getBlockState(target).is(sheet),
+                        "Plywood fire ignored its filled face: " + side + ", filled=" + filled);
+                }
+            }
+        } finally {
+            clearFireFixture(level, firePos);
+            level.getGameRules().set(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, previous, level.getServer());
+        }
+        test.succeed();
+    }
+
+    @GameTest
+    public void rainExtinguishesFireAboveDecorativeWood(GameTestHelper test) {
+        var level = test.getLevel();
+        var firePos = test.absolutePos(new BlockPos(3, 3, 3));
+        var roof = level.getHeightmapPos(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE, firePos).below();
+        var roofState = level.getBlockState(roof);
+        float previousRain = level.getRainLevel(1);
+        int previous = level.getGameRules().get(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER);
+        level.getGameRules().set(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, -1, level.getServer());
+        test.setBiome(net.minecraft.world.level.biome.Biomes.PLAINS);
+        level.setBlockAndUpdate(roof, Blocks.AIR.defaultBlockState());
+        level.setRainLevel(1);
+        try {
+            for (String name : List.of("cork", "plywood_block", "plywood")) {
+                var material = BuiltInRegistries.BLOCK.getValue(id(name));
+                var fuel = material.defaultBlockState();
+                if (material instanceof BlockSheet) fuel = fuel.setValue(BlockSheet.FACING, Direction.DOWN);
+                clearFireFixture(level, firePos);
+                level.setBlockAndUpdate(firePos.below(), fuel);
+                level.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
+                require(level.isRainingAt(firePos), "Rain fixture is covered or outside a rainy biome");
+                level.getBlockState(firePos).tick(level, firePos, burnRandom(299));
+                require(level.isEmptyBlock(firePos) && level.getBlockState(firePos.below()).is(material),
+                    "Decorative wood acted as an infinite fire source: " + name);
+            }
+            clearFireFixture(level, firePos);
+            level.setBlockAndUpdate(firePos.below(), Blocks.NETHERRACK.defaultBlockState());
+            level.setBlockAndUpdate(firePos, Blocks.FIRE.defaultBlockState());
+            level.getBlockState(firePos).tick(level, firePos, burnRandom(299));
+            require(level.getBlockState(firePos).is(Blocks.FIRE), "Vanilla infinite fire source was disabled");
+        } finally {
+            clearFireFixture(level, firePos);
+            level.setBlockAndUpdate(roof, roofState);
+            level.setRainLevel(previousRain);
+            level.getGameRules().set(net.minecraft.world.level.gamerules.GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, previous, level.getServer());
+        }
+        test.succeed();
+    }
+
+    @GameTest
+    public void flowingWaterPreservesOpenForestryFenceGates(GameTestHelper test) {
+        var level = test.getLevel();
+        var source = test.absolutePos(new BlockPos(2, 3, 3));
+        var target = source.east();
+        for (var pos : List.of(source.below(), target.below(), source.west(), source.north(), source.south(), target.north(), target.south())) {
+            level.setBlockAndUpdate(pos, Blocks.STONE.defaultBlockState());
+        }
+        level.setBlockAndUpdate(target, Blocks.SHORT_GRASS.defaultBlockState());
+        level.setBlockAndUpdate(source, Blocks.WATER.defaultBlockState());
+        level.getFluidState(source).tick(level, source, level.getBlockState(source));
+        require(level.getFluidState(target).is(FluidTags.WATER), "Water fixture did not flow through the target");
+        for (var block : BuiltInRegistries.BLOCK) {
+            if (!(block instanceof forestry.arboriculture.wood.ForestryFenceGateBlock)) continue;
+            for (Direction facing : Direction.Plane.HORIZONTAL) {
+                for (boolean open : List.of(false, true)) {
+                    var state = block.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing).setValue(BlockStateProperties.OPEN, open);
+                    level.setBlockAndUpdate(target, state);
+                    level.getFluidState(source).tick(level, source, level.getBlockState(source));
+                    require(level.getBlockState(target).equals(state), "Flowing water destroyed or changed " + block + ": " + facing + ", open=" + open);
+                }
+            }
+        }
+        test.succeed();
+    }
+
+    private static void prepareFireFixture(net.minecraft.server.level.ServerLevel level, BlockPos pos) {
+        clearFireFixture(level, pos);
+        level.setBlockAndUpdate(pos.below(), Blocks.NETHERRACK.defaultBlockState());
+        level.setBlockAndUpdate(pos.east().below(), Blocks.STONE.defaultBlockState());
+        level.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
+    }
+
+    private static void clearFireFixture(net.minecraft.server.level.ServerLevel level, BlockPos pos) {
+        for (BlockPos cell : BlockPos.betweenClosed(pos.offset(-1, -1, -1), pos.offset(1, 4, 1))) {
+            level.setBlock(cell, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
+    }
+
+    private static RandomSource burnRandom(int burnRoll) {
+        return new net.minecraft.world.level.levelgen.LegacyRandomSource(0) {
+            @Override
+            public int nextInt(int bound) {
+                if (bound == 250 || bound == 300) return Math.min(burnRoll, bound - 1);
+                return bound - 1;
+            }
+
+            @Override
+            public float nextFloat() {
+                return 0;
+            }
+        };
+    }
+
+    @GameTest
     public void recipeGhostTransferIsAuthorizedAndImmutable(GameTestHelper test) {
         var pos = test.absolutePos(new BlockPos(3, 2, 3));
         test.getLevel().setBlockAndUpdate(pos, FactoryBlocks.PLAIN.get(BlockTypeFactoryPlain.CARPENTER).defaultState());

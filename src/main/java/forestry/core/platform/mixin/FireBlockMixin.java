@@ -25,24 +25,15 @@ abstract class FireBlockMixin {
         checkBurnOut(level, pos, chance, random, age);
     }
 
-    @org.spongepowered.asm.mixin.injection.Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;is(Lnet/minecraft/core/HolderSet;)Z"))
-    private boolean forestry$fireSource(BlockState below, net.minecraft.core.HolderSet<net.minecraft.world.level.block.Block> infiniteBurn,
-            BlockState fire, net.minecraft.server.level.ServerLevel level, BlockPos pos, net.minecraft.util.RandomSource random) {
-        return below.is(infiniteBurn) || below.getBlock() instanceof forestry.core.platform.block.ForestryCombustible rule
-            && rule.isFireSource(below, level, pos.below(), Direction.UP);
-    }
-
     @org.spongepowered.asm.mixin.injection.Redirect(method = "checkBurnOut", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"))
     private boolean forestry$meltBurningWax(net.minecraft.world.level.Level level, BlockPos pos, BlockState replacement, int flags) {
         if (level.getBlockState(pos).getBlock() instanceof forestry.apiculture.bees.BlockWax wax && wax.melts()) return wax.melt(level, pos);
-        if (level.getBlockState(pos).getBlock() instanceof forestry.core.platform.block.ForestryCombustible rule) return rule.onCaughtFire(level.getBlockState(pos), level, pos, null, null);
         return level.setBlock(pos, replacement, flags);
     }
 
     @org.spongepowered.asm.mixin.injection.Redirect(method = "checkBurnOut", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
     private boolean forestry$meltConsumedWax(net.minecraft.world.level.Level level, BlockPos pos, boolean moving) {
         if (level.getBlockState(pos).getBlock() instanceof forestry.apiculture.bees.BlockWax wax && wax.melts()) return wax.melt(level, pos);
-        if (level.getBlockState(pos).getBlock() instanceof forestry.core.platform.block.ForestryCombustible rule) return rule.onCaughtFire(level.getBlockState(pos), level, pos, null, null);
         return level.removeBlock(pos, moving);
     }
 

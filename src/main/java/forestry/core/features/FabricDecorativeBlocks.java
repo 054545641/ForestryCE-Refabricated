@@ -40,7 +40,7 @@ public final class FabricDecorativeBlocks {
         registry.addRegistryListener(net.minecraft.core.registries.Registries.BLOCK, () -> {
             var flammables = net.fabricmc.fabric.api.registry.FlammableBlockRegistry.getDefaultInstance();
             for (var block : net.minecraft.core.registries.BuiltInRegistries.BLOCK) {
-                if (block instanceof forestry.core.platform.block.ForestryCombustible) flammables.add(block, 45, 45);
+                if (block instanceof forestry.core.platform.block.ForestryCombustible) flammables.add(block, 5, 20);
             }
         });
         return features;

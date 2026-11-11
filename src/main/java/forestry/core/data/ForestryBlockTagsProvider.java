@@ -248,6 +248,8 @@ public final class ForestryBlockTagsProvider {
 
 		tags.tag(ForestryTags.Blocks.MODEST_BEE_GROUND).addTag(BlockTags.SAND).addTag(BlockTags.TERRACOTTA);
 		tags.tag(ForestryTags.Blocks.WINTRY_BEE_GROUND).addTag(BlockTags.DIRT).addTag(BlockTags.SNOW);
+		// 26.2 splits the old dirt tag into substrate families
+		tags.tag(ForestryTags.Blocks.SWARM_BEE_GROUND).addTag(BlockTags.SUBSTRATE_OVERWORLD);
 		tags.tag(ForestryTags.Blocks.ENDED_BEE_GROUND).add(Blocks.END_STONE);
 		tags.tag(ForestryTags.Blocks.LUSH_BEE_CEILING).add(Blocks.MOSS_BLOCK).add(Blocks.ROOTED_DIRT);
 		tags.tag(ForestryTags.Blocks.CAVE_EXTRA_REPLACEABLES).add(Blocks.POINTED_DRIPSTONE).add(Blocks.CAVE_VINES).add(Blocks.CAVE_VINES_PLANT).add(Blocks.HANGING_ROOTS).add(Blocks.GLOW_LICHEN);

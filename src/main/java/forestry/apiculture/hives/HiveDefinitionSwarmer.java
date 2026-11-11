@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,13 @@ public class HiveDefinitionSwarmer implements IHiveDefinition {
 
 	@Override
 	public IHivePlacement getHiveGen() {
-		return new GroundHivePlacement(ForestryTags.Blocks.SWARM_BEE_GROUND);
+		return new GroundHivePlacement(ForestryTags.Blocks.SWARM_BEE_GROUND) {
+			@Override
+			public Heightmap.Types getHeightmapType() {
+				// swarmers run after world generation, when the generation heightmap no longer updates
+				return Heightmap.Types.WORLD_SURFACE;
+			}
+		};
 	}
 
 	@Override
